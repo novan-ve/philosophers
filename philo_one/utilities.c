@@ -6,14 +6,14 @@
 /*   By: novan-ve <novan-ve@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/05 10:18:03 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/07/10 14:14:52 by novan-ve      ########   odam.nl         */
+/*   Updated: 2020/07/16 13:24:38 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdint.h>
 
-int		error(char *s)
+int						error(char *s)
 {
 	int					i;
 	char				ch;
@@ -30,7 +30,7 @@ int		error(char *s)
 	return (0);
 }
 
-int		ft_atoi(const char *str)
+int						ft_atoi(const char *str)
 {
 	int					factor;
 	unsigned long long	result;
@@ -59,14 +59,14 @@ int		ft_atoi(const char *str)
 	return (factor * (int)result);
 }
 
-void	ft_putchar(char c)
+void					ft_putchar(char c)
 {
 	write(1, &c, 1);
 }
 
-void		ft_putnbr(uint64_t n)
+void					ft_putnbr(uint64_t n)
 {
-	char *radix;
+	char				*radix;
 
 	radix = "0123456789";
 	if (n >= 10)
@@ -78,9 +78,9 @@ void		ft_putnbr(uint64_t n)
 		ft_putchar(radix[n % 10]);
 }
 
-void	ft_putstr(char *s)
+void					ft_putstr(char *s)
 {
-	char	ch;
+	char				ch;
 
 	while (*s)
 	{

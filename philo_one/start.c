@@ -6,7 +6,7 @@
 /*   By: novan-ve <novan-ve@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/02 13:38:13 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/07/14 12:52:26 by novan-ve      ########   odam.nl         */
+/*   Updated: 2020/07/16 13:35:38 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,24 +59,20 @@ void	*start_philo(void *ptr)
 int		start(t_data *po)
 {
 	int			i;
+	int			check;
 	pthread_t	tid;
 
 	po->start_time = gettime();
 	i = 0;
 	while (i < po->peeps)
 	{
-		if (pthread_create(&tid, NULL, &start_philo, &po->philo[i]))
-		{
-			free(po->mutex);
-			free(po->philo);
-			return (error("failed creating pthread"));
-		}
+		check = pthread_create(&tid, NULL, &start_philo, &po->philo[i]);
 		po->philo[i].last_meal = gettime();
-		if (pthread_detach(tid))
+		if (check || pthread_detach(tid))
 		{
 			free(po->mutex);
 			free(po->philo);
-			return (error("failed detaching pthread"));
+			return (error("failed pthread"));
 		}
 		usleep(100);
 		i++;
