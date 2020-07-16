@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   utilities2.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: novan-ve <novan-ve@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/06/05 10:12:53 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/07/02 14:08:18 by novan-ve      ########   odam.nl         */
+/*   Created: 2020/07/11 12:53:55 by novan-ve      #+#    #+#                 */
+/*   Updated: 2020/07/11 12:58:46 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 #include <sys/time.h>
 
-int		main(int ac, char **av)
+uint64_t	gettime(void)
 {
-	t_data			po;
+	struct timeval	time;
 
-	if (!check(&po, ac, av))
-		return (0);
-	if (!set_philos(&po))
-		return (0);
-	if (!start(&po))
-		return (0);
-	return (0);
+	if (gettimeofday(&time, 0 == -1))
+		return (error("gettimeofday failed"));
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
