@@ -6,16 +6,16 @@
 /*   By: novan-ve <novan-ve@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/10 13:43:02 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/07/16 13:24:57 by novan-ve      ########   odam.nl         */
+/*   Updated: 2020/08/01 12:12:55 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_three.h"
 #include <unistd.h>
 
 void	status(t_philo *philo, int x)
 {
-	if (pthread_mutex_lock(&philo->po->is_writing))
+	if (sem_wait(philo->po->is_writing) < 0)
 		return ;
 	ft_putnbr(gettime() - philo->po->start_time);
 	write(1, " ", 1);
@@ -38,6 +38,6 @@ void	status(t_philo *philo, int x)
 		ft_putstr(" is sleeping\n");
 	if (x == 3)
 		ft_putstr(" is thinking\n");
-	if (pthread_mutex_unlock(&philo->po->is_writing))
+	if (sem_post(philo->po->is_writing) < 0)
 		return ;
 }

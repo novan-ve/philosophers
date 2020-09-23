@@ -6,11 +6,11 @@
 /*   By: novan-ve <novan-ve@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 16:38:53 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/09/20 13:15:33 by novan-ve      ########   odam.nl         */
+/*   Updated: 2020/09/20 16:52:17 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
 #include <unistd.h>
 
 void	*check_health(void *ptr)
@@ -20,16 +20,20 @@ void	*check_health(void *ptr)
 	philo = (t_philo*)ptr;
 	while (!philo->data->stop)
 	{
-		if (pthread_mutex_lock(&philo->is_eating))
-			return (0);
+		if (sem_wait(philo->is_eating) < 0)
+			break ;
+		if (philo->data->stop)
+			break ;
 		if ((int)(gettime() - philo->last_eaten) > philo->data->time_to_die)
 		{
 			status(philo, "");
 			philo->data->stop = 1;
-			return (0);
+			break ;
 		}
-		if (pthread_mutex_unlock(&philo->is_eating))
-			return (0);
+		if (philo->data->stop)
+			break ;
+		if (sem_post(philo->is_eating) < 0)
+			break ;
 		usleep(500);
 	}
 	return (0);

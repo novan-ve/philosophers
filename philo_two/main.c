@@ -6,31 +6,28 @@
 /*   By: novan-ve <novan-ve@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:13:10 by novan-ve      #+#    #+#                 */
-/*   Updated: 2020/09/21 12:51:32 by novan-ve      ########   odam.nl         */
+/*   Updated: 2020/09/21 12:50:16 by novan-ve      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
 #include <stdlib.h>
 
 int		init_philo(t_data *data)
 {
 	int		i;
-	int		check;
 
 	i = 0;
+	sem_unlink("/is_eating");
 	while (i < data->no_philos)
 	{
-		check = pthread_mutex_init(&data->philo[i].is_eating, NULL);
-		if (check || pthread_mutex_init(&data->forks[i], NULL))
+		data->philo[i].is_eating = sem_open("/is_eating", O_CREAT, 0666, 1);
+		if (data->philo[i].is_eating == SEM_FAILED)
 		{
-			free(data->forks);
 			free(data->philo);
-			return (error("Failed initializing mutex"));
+			return (error("Failed opening semaphore"));
 		}
 		data->philo[i].nb = i + 1;
-		data->philo[i].left = i;
-		data->philo[i].right = (i + 1) % data->no_philos;
 		data->philo[i].times_eaten = 0;
 		data->philo[i].data = data;
 		i++;
@@ -40,19 +37,19 @@ int		init_philo(t_data *data)
 
 int		init_data(t_data *data)
 {
-	int		nb;
-
-	if (pthread_mutex_init(&data->is_writing, NULL))
-		return (error("Failed initializing mutex"));
+	sem_unlink("/is_writing");
+	data->is_writing = sem_open("/is_writing", O_CREAT, 0666, 1);
+	if (data->is_writing == SEM_FAILED)
+		return (error("Failed opening semaphore"));
 	data->philo = (t_philo*)malloc(sizeof(t_philo) * data->no_philos);
 	if (!data->philo)
 		return (error("malloc fail"));
-	nb = data->no_philos;
-	data->forks = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t) * nb);
-	if (!data->forks)
+	sem_unlink("/forks");
+	data->forks = sem_open("/forks", O_CREAT, 0666, data->no_philos);
+	if (data->forks == SEM_FAILED)
 	{
 		free(data->philo);
-		return (error("malloc fail"));
+		return (error("Failed opening semaphore"));
 	}
 	data->stop = 0;
 	return (init_philo(data));
